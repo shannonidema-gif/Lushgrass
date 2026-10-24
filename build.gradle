@@ -1,0 +1,23 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${project.loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base { archivesName = "lushgrass" }
+
+dependencies {
+    // 26.x is unobfuscated: no mappings block needed
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // Only used for the dev runtime; the mod itself needs no Fabric API
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") { expand "version": inputs.properties.version }
+}
+
+tasks.withType(JavaCompile).configureEach { options.release = 25 }
+java { withSourcesJar() }
